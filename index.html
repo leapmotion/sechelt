@@ -26,6 +26,10 @@
 		<script src="js/C4DCurveLoader.js"></script>
 		<script src="js/vrclient.js"></script>
 
+    <script src="//js.leapmotion.com/leap-0.6.4.min.js"></script>
+    <script src="//js.leapmotion.com/leap-plugins-0.1.10.js"></script>
+    <script src="js/leap.flyControls.js"></script>
+
 		<script>
 
 			var parameters = ( function () {
@@ -87,6 +91,21 @@
 					effect.setFullScreen( true );
 
 				} );
+
+
+        // Leap Motion
+
+        Leap.loop()
+          .use('transform', {
+            vr: true,
+            effectiveParent: dolly
+          })
+          .use('boneHand',  {
+            arm: true,
+            scene: scene,
+            render: function(){}
+          })
+          .use('flyControls');
 
 
 				// skybox
@@ -353,24 +372,39 @@
 
 			}
 
+      var updateCameraFromPath = function(time){
+
+        time = TWEEN.Easing.Sinusoidal.InOut( Math.min( time / 70000, 1 ) ) * 0.9999;
+
+        var pointA = cameraPath.getPointAt( time );
+        var pointB = cameraPath.getPointAt( Math.min( time + 0.0001, 1 ) );
+
+        pointA.z = -pointA.z;
+        pointB.z = -pointB.z;
+
+        dolly.position.copy( pointA );
+        dolly.lookAt( pointB );
+        dolly.rotateY( Math.PI ); // look forward
+
+      };
+
+
+
 
 			function animate( time ) {
 
 				requestAnimationFrame( animate );
 
-				if ( cameraPath !== undefined ) {
+        // The streaming check here will cause a momentary initial travel over the camera path
+        if ( Leap.loopController && Leap.loopController.streaming() ){
 
-					time = TWEEN.Easing.Sinusoidal.InOut( Math.min( time / 70000, 1 ) ) * 0.9999;
+          // We call this method directly from our own animationLoop, rather than having two animation loops
+          // which would cause a frame-delay
+          Leap.loopController.updateCameraFromFlyingControls(dolly);
 
-					var pointA = cameraPath.getPointAt( time );
-					var pointB = cameraPath.getPointAt( Math.min( time + 0.0001, 1 ) );
+        } else if ( cameraPath !== undefined ) {
 
-					pointA.z = -pointA.z;
-					pointB.z = -pointB.z;
-
-					dolly.position.copy( pointA );
-					dolly.lookAt( pointB );
-					dolly.rotateY( Math.PI ); // look forward
+          updateCameraFromPath(time);
 
 				}
 
