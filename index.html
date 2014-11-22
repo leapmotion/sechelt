@@ -28,6 +28,7 @@
 
     <script src="//js.leapmotion.com/leap-0.6.4.min.js"></script>
     <script src="//js.leapmotion.com/leap-plugins-0.1.10.js"></script>
+    <script src="js/leap.bone-hand.js"></script>
     <script src="js/leap.flyControls.js"></script>
 
 		<script>
@@ -93,21 +94,6 @@
 				} );
 
 
-        // Leap Motion
-
-        Leap.loop()
-          .use('transform', {
-            vr: true,
-            effectiveParent: dolly
-          })
-          .use('boneHand',  {
-            arm: true,
-            scene: scene,
-            render: function(){}
-          })
-          .use('flyControls');
-
-
 				// skybox
 
 				var geometry = new THREE.SphereGeometry( 10000, 64, 32 );
@@ -152,6 +138,20 @@
 
 				sky = new THREE.Mesh( geometry, material );
 				scene.add( sky );
+
+        // Leap Motion
+
+        Leap.loop({background: true})
+          .use('transform', {
+            vr: true,
+            effectiveParent: dolly
+          })
+          .use('boneHand',  {
+            arm: true,
+            scene: scene,
+            render: function(){}
+          })
+          .use('flyControls');
 
 
 				// waves
