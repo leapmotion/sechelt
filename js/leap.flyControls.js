@@ -1,5 +1,7 @@
 // Ported from https://developer.leapmotion.com/gallery/leap-motion-vr-intro
 // by @pehrlich and @jhe
+// See original source, here:
+// https://github.com/leapmotion/VRIntro/blob/master/source/VRIntroLib/FlyingLayer.cpp#L37
 Leap.plugin( 'flyControls', function(scope){
 
   scope || (scope = {});
