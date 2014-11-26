@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Sechelt</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #fff;
+				color: #fff;
+				margin: 0px;
+				overflow: hidden;
+			}
+      canvas {
+        width: 100%;
+        height: 50%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      #num2{
+        top: 200px;
+      }
+		</style>
+	</head>
+
+	<body>
+
+  </body>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js"></script>
+
+    <script src="//js.leapmotion.com/leap-0.6.4.min.js"></script>
+    <script src="//js.leapmotion.com/leap-plugins-0.1.10.js"></script>
+
+		<script>
+
+			var parameters = ( function () {
+				var parameters = {};
+				var parts = window.location.search.substr( 1 ).split( '&' );
+				for ( var i = 0; i < parts.length; i ++ ) {
+					var parameter = parts[ i ].split( '=' );
+					parameters[ parameter[ 0 ] ] = parameter[ 1 ];
+				}
+				return parameters;
+			} )();
+
+			var camera1, scene1, renderer1, target;
+
+			init();
+
+
+			function init() {
+
+				renderer1 = new THREE.WebGLRenderer(  );
+				renderer1.setClearColor( 0x330000 );
+        renderer1.setSize(window.innerWidth, window.innerHeight);
+				document.body.appendChild( renderer1.domElement );
+
+				scene1 = new THREE.Scene();
+
+        var cube = new THREE.Mesh(
+          new THREE.BoxGeometry(0.1,0.1,0.1),
+          new THREE.MeshPhongMaterial({color: new THREE.Color(0x00ff00)})
+        );
+
+        cube.position.set(0,0,-1);
+        scene1.add(cube);
+
+
+				camera1 = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 200 );
+
+        scene1.add(camera1);
+
+        scene1.add(
+          new THREE.AmbientLight()
+        );
+
+
+        target = new THREE.WebGLRenderTarget(128, 128);
+
+				renderer2 = new THREE.WebGLRenderer(  );
+				renderer2.setClearColor( 0x003300 );
+        renderer2.setSize(window.innerWidth, window.innerHeight);
+				document.body.appendChild( renderer2.domElement );
+        renderer2.domElement.id = "num2";
+
+				scene2 = new THREE.Scene();
+
+        var cube = new THREE.Mesh(
+          new THREE.BoxGeometry(0.1,0.1,0.1),
+          new THREE.MeshPhongMaterial({color: new THREE.Color(0x00ff00)})
+        );
+
+        cube.position.set(-0.2,-0.2,-1);
+        scene2.add(cube);
+
+
+				camera2 = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 200 );
+
+        scene2.add(camera1);
+
+        scene2.add(
+          new THREE.AmbientLight( 0xbbbbbb )
+        );
+
+			}
+
+
+
+      function animate(){
+				renderer1.render( scene1, camera1 );
+				renderer2.render( scene2, camera2 , target );
+        window.requestAnimationFrame(animate);
+      }
+      animate();
+
+		</script>
+
+</html>

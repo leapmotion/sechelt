@@ -87,7 +87,7 @@ window.VRClient = (function() {
           reject('no VR devices found!');
         }).catch(reject);
       } else {
-        reject('no VR implementation found!');
+//        reject('no VR implementation found!');
       }
     });
 
